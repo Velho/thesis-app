@@ -1,0 +1,6 @@
+[submodule "thesis"]
+	path = thesis
+	url = https://github.com/velho/thesis
+[submodule "mongoose"]
+	path = mongoose
+	url = https://github.com/velho/mongoose
