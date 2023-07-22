@@ -33,15 +33,23 @@ set (THESIS_PROJECT_FOLDER_NAME "thesis" CACHE STRING "Set the thesis project fo
 # as such can be used to disable compilation of the thesis tls
 # in case where mbedtls or openssl is used. openssl is not supported.
 set (THESIS_COMPILE_DEFINITONS)
+set (THESIS_MBEDTLS_DEBUG TRUE) # enable debug logs
 
 if (THESIS_BUILD_MBEDTLS)
+    if (THESIS_MBEDTLS_TLS13)
+        list (APPEND THESIS_COMPILE_DEFINITIONS MBEDTLS_SSL_PROTO_TLS1_3 )
+    elseif (THESIS_MBEDTLS_DEBUG)
+        list (APPEND THESIS_COMPILE_DEFINITIONS MBEDTLS_DEBUG_C)
+    endif ()
     list (APPEND THESIS_COMPILE_DEFINITIONS MG_ENABLE_MBEDTLS)
 else ()
     list (APPEND THESIS_COMPILE_DEFINITONS MG_ENABLE_TLSE MG_ENABLE_CUSTOM_TLS)
 endif ()
 
+set (MBEDTLS_PATH mbedtls)
+
 if (THESIS_BUILD_MBEDTLS)
-    set (MBEDTLS_PATH mbedtls)
+    set (MBEDTLS_USER_CONFIG_FILE "${CMAKE_SOURCE_DIR}/${MBEDTLS_PATH}/tests/configs/tls13-only.h")
     add_subdirectory (${MBEDTLS_PATH})
 else ()
     # configure thesis library without mongoose
@@ -79,6 +87,10 @@ if (THESIS_BUILD_MBEDTLS)
         PUBLIC MbedTLS::mbedtls
                MbedTLS::mbedcrypto
                MbedTLS::mbedx509)
+
+    # enuf adding to thesis-app and not directly to mbed targets?
+    # target_compile_definitions (mongoose PUBLIC MBEDTLS_DEBUG_C)
+    target_include_directories (thesis-app PUBLIC ${MBEDTLS_PATH}/include)
 else ()
     # configure mongoose with thesis-tls backend
     target_link_libraries (mongoose
