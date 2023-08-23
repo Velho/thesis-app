@@ -1,13 +1,14 @@
 cmake_minimum_required (VERSION 3.12)
 project (thesis-app)
 
-# export the compile commands as quality of life
+# enable compile commands for clangd lsp
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set (CMAKE_BUILD_TYPE Debug)
 
-option (THESIS_BUILD_MBEDTLS "Build using MBedTLS (disables thesis tls)" OFF)
+if (NOT DEFINED CMAKE_BUILD_TYPE)
+    set (CMAKE_BUILD_TYPE Debug)
+endif ()
 
-message ("Building MBedTLS : ${THESIS_BUILD_MBEDTLS}")
+
 
 set (THESIS_APP_SOURCES
     src/main.c)
