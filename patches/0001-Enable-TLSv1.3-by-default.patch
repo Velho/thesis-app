@@ -1,0 +1,28 @@
+From 85839cce662563a574f22d343d05f36b9b4ce16f Mon Sep 17 00:00:00 2001
+From: Velho <jewel960@gmail.com>
+Date: Wed, 23 Aug 2023 14:39:22 +0300
+Subject: [PATCH] Enable TLSv1.3 by default.
+
+---
+ src/tls_mbed.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/tls_mbed.c b/src/tls_mbed.c
+index f6923616..9d393360 100644
+--- a/src/tls_mbed.c
++++ b/src/tls_mbed.c
+@@ -175,6 +175,11 @@ void mg_tls_init(struct mg_connection *c, const struct mg_tls_opts *opts) {
+       goto fail;
+     }
+   }
++
++  // set mbedtls to use tls1.3 by default
++  mbedtls_ssl_conf_min_tls_version(&tls->conf, MBEDTLS_SSL_VERSION_TLS1_3);
++  mbedtls_ssl_conf_max_tls_version(&tls->conf, MBEDTLS_SSL_VERSION_TLS1_3);
++
+   if ((rc = mbedtls_ssl_setup(&tls->ssl, &tls->conf)) != 0) {
+     mg_error(c, "setup err %#x", -rc);
+     goto fail;
+-- 
+2.41.0
+
