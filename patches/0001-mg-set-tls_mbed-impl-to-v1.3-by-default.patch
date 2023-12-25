@@ -1,28 +1,33 @@
-From 85839cce662563a574f22d343d05f36b9b4ce16f Mon Sep 17 00:00:00 2001
-From: Velho <jewel960@gmail.com>
-Date: Wed, 23 Aug 2023 14:39:22 +0300
-Subject: [PATCH] Enable TLSv1.3 by default.
+From 6b3d0fce32f68d9e24e9a958a821c4633c702b6e Mon Sep 17 00:00:00 2001
+From: velho <jewel960@gmail.com>
+Date: Mon, 25 Dec 2023 03:10:42 +0200
+Subject: [PATCH] mg: set tls_mbed impl to v1.3 by default.
 
+Set the minimum and maximum versions to TLSv1.3
+to force it to be used by default. Crypto lib initialized
+for the mbed TLSv1.3 to work.
 ---
- src/tls_mbed.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ src/tls_mbed.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/src/tls_mbed.c b/src/tls_mbed.c
-index f6923616..9d393360 100644
+index f6923616..55f119a2 100644
 --- a/src/tls_mbed.c
 +++ b/src/tls_mbed.c
-@@ -175,6 +175,11 @@ void mg_tls_init(struct mg_connection *c, const struct mg_tls_opts *opts) {
-       goto fail;
-     }
-   }
+@@ -108,6 +108,13 @@ void mg_tls_init(struct mg_connection *c, const struct mg_tls_opts *opts) {
+   MG_DEBUG(("%lu Setting TLS", c->id));
+   mbedtls_ssl_init(&tls->ssl);
+   mbedtls_ssl_config_init(&tls->conf);
 +
-+  // set mbedtls to use tls1.3 by default
-+  mbedtls_ssl_conf_min_tls_version(&tls->conf, MBEDTLS_SSL_VERSION_TLS1_3);
++  // initialize crypto functionalities to defined state
++  psa_crypto_init();
++
 +  mbedtls_ssl_conf_max_tls_version(&tls->conf, MBEDTLS_SSL_VERSION_TLS1_3);
++  mbedtls_ssl_conf_min_tls_version(&tls->conf, MBEDTLS_SSL_VERSION_TLS1_3);
 +
-   if ((rc = mbedtls_ssl_setup(&tls->ssl, &tls->conf)) != 0) {
-     mg_error(c, "setup err %#x", -rc);
-     goto fail;
+   mbedtls_x509_crt_init(&tls->ca);
+   mbedtls_x509_crt_init(&tls->cert);
+   mbedtls_pk_init(&tls->pk);
 -- 
-2.41.0
+2.25.1
 
