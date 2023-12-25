@@ -1,0 +1,34 @@
+From 34ad142f7794cdbffaddbe75cefbdf973c931882 Mon Sep 17 00:00:00 2001
+From: velho <jewel960@gmail.com>
+Date: Mon, 25 Dec 2023 03:04:12 +0200
+Subject: [PATCH] mbedtls: Enable TLSv1.3.
+
+---
+ include/mbedtls/mbedtls_config.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/mbedtls/mbedtls_config.h b/include/mbedtls/mbedtls_config.h
+index e1456b9ae..114136b2a 100644
+--- a/include/mbedtls/mbedtls_config.h
++++ b/include/mbedtls/mbedtls_config.h
+@@ -1774,7 +1774,7 @@
+  *
+  * Uncomment this macro to enable the support for TLS 1.3.
+  */
+-//#define MBEDTLS_SSL_PROTO_TLS1_3
++#define MBEDTLS_SSL_PROTO_TLS1_3
+ 
+ /**
+  * \def MBEDTLS_SSL_TLS1_3_COMPATIBILITY_MODE
+@@ -1796,7 +1796,7 @@
+  * effect on the build.
+  *
+  */
+-//#define MBEDTLS_SSL_TLS1_3_COMPATIBILITY_MODE
++#define MBEDTLS_SSL_TLS1_3_COMPATIBILITY_MODE
+ 
+ /**
+  * \def MBEDTLS_SSL_TLS1_3_KEY_EXCHANGE_MODE_PSK_ENABLED
+-- 
+2.25.1
+
